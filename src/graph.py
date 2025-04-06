@@ -8,6 +8,12 @@ class Graph:
         # Each key is a node and each value is the list of the node adjacencies
         self.adj_list: dict[str, list[tuple[str, int]]] = defaultdict(list)
 
+    def get_size(self) -> int:
+        return self.size
+
+    def get_order(self) -> int:
+        return self.order
+
     def contains_node(self, label: str) -> bool:
         return label in self.adj_list
 
@@ -89,7 +95,7 @@ class Graph:
 
     def get_weight(self, u: str, v: str) -> int:
         if not self.contains_edge(u, v):
-            raise Exception("Edge between 2 nodes does not exist")
+            return 0
 
         for tup in self.adj_list[u]:
             if tup[0] == v:
@@ -103,4 +109,4 @@ class Graph:
         for node, adjacencies in self.adj_list.items():
             adj_str = " -> ".join([f"({v}, {w})" for v, w in adjacencies])
             result.append(f"{node}: {adj_str} ->" if adjacencies else f"{node}:")
-        return "\n".join(result)
+        return "\n\n".join(result)

@@ -11,4 +11,4 @@ def parse_email(path: str) -> tuple[str, list[str]]:
         if receiver is None:
             return sender, []
 
-        return sender, receiver.split(",")
+        return sender.strip(), [x.strip() for x in receiver.split(",")]
