@@ -27,14 +27,16 @@ def main() -> None:
     print(f"Graph size (number of edges): {graph.get_size()}\n")
     top_indegree, top_outdegree = graph.top_degrees()
     print("TOP 20 OUTDEGREE NODES:")
-    [print(x) for x in top_outdegree]
+    for outdegree in top_outdegree:
+        print(outdegree)
     print("\n-------------------------\n")
     print("TOP 20 INDEGREE NODES:")
-    [print(x) for x in top_indegree]
+    for indegree in top_indegree:
+        print(indegree)
 
     # Exercise 3
     eul, error = graph.is_eulerian()
-    print("\nGRAPH IS EULERIAN") if eul else print(f"\nGRAPH ISNT EULERIAN \n{error}")
+    print("\nGRAPH IS EULERIAN") if eul else print(f"\nGRAPH ISNT EULERIAN: \n{error}")
 
 
 if __name__ == "__main__":
