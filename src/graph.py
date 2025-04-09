@@ -110,3 +110,15 @@ class Graph:
             adj_str = " -> ".join([f"({v}, {w})" for v, w in adjacencies])
             result.append(f"{node}: {adj_str} ->" if adjacencies else f"{node}:")
         return "\n\n".join(result)
+
+    def top_degrees(self) -> tuple[list[tuple[str, int]], list[tuple[str, int]]]:
+
+        # Get the outdegree and indegree of all nodes in the graph
+        in_degrees = [(label, self.in_degree(label)) for label in self.adj_list]
+        out_degrees = [(label, self.out_degree(label)) for label in self.adj_list]
+
+        # Sort them descending by degree
+        in_degrees.sort(key=lambda x: x[1], reverse=True)
+        out_degrees.sort(key=lambda x: x[1], reverse=True)
+
+        return in_degrees[:20], out_degrees[:20]
