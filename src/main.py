@@ -21,15 +21,20 @@ def main() -> None:
                 graph.add_edge(sender, receiver, previous_weigth + 1)
 
     open("output.txt", "w").write(graph.to_string())  # Saves the graph in a txt file
+
+    # Exercise 2
     print(f"Graph order (number of nodes): {graph.get_order()}")
     print(f"Graph size (number of edges): {graph.get_size()}\n")
-
     top_indegree, top_outdegree = graph.top_degrees()
     print("TOP 20 OUTDEGREE NODES:")
     [print(x) for x in top_outdegree]
     print("\n-------------------------\n")
     print("TOP 20 INDEGREE NODES:")
     [print(x) for x in top_indegree]
+
+    # Exercise 3
+    eul, error = graph.is_eulerian()
+    print("\nGRAPH IS EULERIAN") if eul else print(f"\nGRAPH ISNT EULERIAN \n{error}")
 
 
 if __name__ == "__main__":
