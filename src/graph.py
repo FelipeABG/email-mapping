@@ -204,10 +204,39 @@ class Graph:
         # Calculate cost to all nodes from the start node
         paths = self.dijkstra(start)
 
-        # If the cost is less or equal to the given distance
-        # Adds it to the result
+        # If the cost is less than or equal to the
+        # given distance: Adds it to list of reacheable nodes
         for node, pair in paths.items():
             if node != start and pair[0] <= distance:
                 result.append(node)
 
         return result
+
+    def diameter(self) -> tuple[float, list[str]]:
+        longest_distance = -1
+        longest_path = []
+
+        # Calculate the shortest path of all nodes
+        for node in self.adj_list:
+            paths = self.dijkstra(node)
+
+            for target, (distance, _) in paths.items():
+                # determine the biggest of the shortest path
+                if (
+                    target != node
+                    and distance != float("inf")
+                    and distance > longest_distance
+                ):
+                    # Updating the distance
+                    longest_distance = distance
+
+                    path = []
+                    current = target
+                    while current != "-":
+                        path.append(current)
+                        current = paths[current][1]
+
+                    # Updating the path
+                    longest_path = list(reversed(path))
+
+        return longest_distance, longest_path

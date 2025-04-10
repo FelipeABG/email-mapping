@@ -6,7 +6,7 @@ import os
 def main() -> None:
     graph = Graph()
 
-    # Traversing the dataset
+    # Exercise 1
     for root, _, files in os.walk("eron-dataset"):
         # For each file (email)
         for file in files:
@@ -19,12 +19,14 @@ def main() -> None:
             if len(receivers) == 0:
                 continue
 
-            # Adds the nodes and the edges of the email
+            # Adds the nodes and the edges of the email to the graph
             for receiver in receivers:
                 previous_weigth = graph.get_weight(sender, receiver)
                 graph.add_edge(sender, receiver, previous_weigth + 1)
 
     # Saves the graph in a txt file
+    if os.path.isfile("output.txt"):
+        os.remove("output.txt")
     open("output.txt", "w").write(graph.to_string())
 
     # Exercise 2
@@ -45,6 +47,9 @@ def main() -> None:
 
     # Exercise 4
     print(f"\nEXERCISE 4\n: {graph.nodes_in_distance(top_indegree[19][0], 3)}")
+
+    # Exercise 5
+    print(f"\nEXERCISE 5\n: {graph.diameter()}")
 
 
 if __name__ == "__main__":
