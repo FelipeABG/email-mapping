@@ -176,26 +176,36 @@ class Graph:
         if not self.contains_node(start):
             raise Exception("Node does not exist in graph")
 
+        # Step 1: adds pair of `inf : -` to all nodes
         paths = {node: (float("inf"), "-") for node in self.adj_list}
         paths[start] = (0, "-")
 
+        # Priority queue (will always pop the node with the least cost)
         queue = [(0, start)]
 
         while len(queue) != 0:
             current_dist, current_node = heapq.heappop(queue)
 
+            # Step 2: for each non-visited neighbor:
             for neighbor, weight in self.adj_list[current_node]:
+                # Calculate the new cost
                 new_dist = current_dist + weight
+                # Change if the new cost < the current cost
                 if new_dist < paths[neighbor][0]:
                     paths[neighbor] = (new_dist, current_node)
+                    # Adds the node to the queue
                     heapq.heappush(queue, (new_dist, neighbor))
 
         return paths
 
     def nodes_in_distance(self, start: str, distance: int) -> list[str]:
         result = []
+
+        # Calculate cost to all nodes from the start node
         paths = self.dijkstra(start)
 
+        # If the cost is less or equal to the given distance
+        # Adds it to the result
         for node, pair in paths.items():
             if node != start and pair[0] <= distance:
                 result.append(node)
