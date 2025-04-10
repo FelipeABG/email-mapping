@@ -1,4 +1,5 @@
 from collections import defaultdict
+import heapq
 
 
 class Graph:
@@ -104,12 +105,6 @@ class Graph:
         # This is unreacheable
         return 0
 
-    def get_adjacents(self, node: str) -> list[tuple[str, int]]:
-        if not self.contains_node(node):
-            raise Exception(f"Node '{node}' does not exists")
-
-        return self.adj_list[node]
-
     def to_string(self) -> str:
         result = []
         for node, adj in self.adj_list.items():
@@ -130,18 +125,26 @@ class Graph:
         return in_degrees[:20], out_degrees[:20]
 
     def dfs(self, start_node: str) -> list[str]:
-        stack = [start_node]  # Step 1: add the starting node the the stack
+        if not self.contains_node(start_node):
+            raise Exception("Node does not exist in graph")
+
+        # Step 1: add the starting node the the stack
+        stack = [start_node]
         visited = []
 
         while len(stack) != 0:
-            current = stack.pop()  # Step 2: Removes a node from the stack
-            if current not in visited:  # Step 3: Add node to visited list if not there
+            # Step 2: Removes a node from the stack
+            current = stack.pop()
+
+            # Step 3: Add node to visited list if not there
+            if current not in visited:
                 visited.append(current)
 
                 # Sorting by alphabetic order
-                adj = sorted(self.get_adjacents(current), key=lambda x: x[0])
+                adjacents = sorted(self.adj_list[current], key=lambda x: x[0])
 
-                for node, _ in adj:  # Step 4: add non-visited neighbors to the stack
+                # Step 4: add non-visited neighbors to the stack
+                for node, _ in adjacents:
                     if node not in visited:
                         stack.append(node)
 
@@ -168,3 +171,38 @@ class Graph:
             return (True, error_msg)
 
         return (False, error_msg)
+
+    def nodes_in_distance(self, start: str, distance: int) -> list[str]:
+        if not self.contains_node(start):
+            raise Exception("Node does not exist in graph")
+
+        result = []
+
+        # Dictionary with `node : inf` for all nodes in graph
+        distances = {node: float("inf") for node in self.adj_list}
+        distances[start] = 0
+
+        # Queue of next node to be visited (the one with least distance)
+        queue = [(0, start)]
+
+        while len(queue) != 0:
+            # Get the lowest distance node
+            current_dist, current_node = heapq.heappop(queue)
+
+            # Skip nodes with distance grater than expected
+            if current_dist > distance:
+                continue
+
+            # Append the current node to the result
+            if current_node != start:
+                result.append(current_node)
+
+            # Visit all adjacents nodes setting up the new distance
+            for adj, weight in self.adj_list[current_node]:
+                new_dist = current_dist + weight
+
+                if new_dist < distances[adj]:
+                    distances[adj] = new_dist
+                    heapq.heappush(queue, (new_dist, adj))
+
+        return result

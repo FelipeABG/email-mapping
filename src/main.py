@@ -11,16 +11,21 @@ def main() -> None:
         # For each file (email)
         for file in files:
             path = os.path.join(root, file)
-            sender, receivers = parse_email(path)  # Get those involved in the email
 
+            # Get those involved in the email
+            sender, receivers = parse_email(path)
+
+            # Skips if the email has no receivers
             if len(receivers) == 0:
-                continue  # Skips if the email has no receivers
+                continue
 
-            for receiver in receivers:  # Adds the nodes and the edges of the email
+            # Adds the nodes and the edges of the email
+            for receiver in receivers:
                 previous_weigth = graph.get_weight(sender, receiver)
                 graph.add_edge(sender, receiver, previous_weigth + 1)
 
-    open("output.txt", "w").write(graph.to_string())  # Saves the graph in a txt file
+    # Saves the graph in a txt file
+    open("output.txt", "w").write(graph.to_string())
 
     # Exercise 2
     print(f"Graph order (number of nodes): {graph.get_order()}")
@@ -37,6 +42,9 @@ def main() -> None:
     # Exercise 3
     eul, error = graph.is_eulerian()
     print("\nGRAPH IS EULERIAN") if eul else print(f"\nGRAPH ISNT EULERIAN: \n{error}")
+
+    # Exercise 4
+    print(f"\nDijkstra: {graph.nodes_in_distance(top_indegree[19][0], 0)}")
 
 
 if __name__ == "__main__":
