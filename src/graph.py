@@ -172,37 +172,35 @@ class Graph:
 
         return (False, error_msg)
 
-    def nodes_in_distance(self, start: str, distance: int) -> list[str]:
+    def dijkstra(self, start: str) -> tuple[dict[str, float], dict[str, str]]:
         if not self.contains_node(start):
             raise Exception("Node does not exist in graph")
 
-        result = []
-
-        # Dictionary with `node : inf` for all nodes in graph
         distances = {node: float("inf") for node in self.adj_list}
         distances[start] = 0
 
-        # Queue of next node to be visited (the one with least distance)
+        previous = {node: "-" for node in self.adj_list}
+
         queue = [(0, start)]
 
         while len(queue) != 0:
-            # Get the lowest distance node
             current_dist, current_node = heapq.heappop(queue)
 
-            # Skip nodes with distance grater than expected
-            if current_dist > distance:
-                continue
-
-            # Append the current node to the result
-            if current_node != start:
-                result.append(current_node)
-
-            # Visit all adjacents nodes setting up the new distance
-            for adj, weight in self.adj_list[current_node]:
+            for neighbor, weight in self.adj_list[current_node]:
                 new_dist = current_dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    previous[neighbor] = current_node
+                    heapq.heappush(queue, (new_dist, neighbor))
 
-                if new_dist < distances[adj]:
-                    distances[adj] = new_dist
-                    heapq.heappush(queue, (new_dist, adj))
+        return distances, previous
+
+    def nodes_in_distance(self, start: str, distance: int) -> list[str]:
+        result = []
+        distances, _ = self.dijkstra(start)
+
+        for node, dist in distances.items():
+            if node != start and dist <= distance:
+                result.append(node)
 
         return result

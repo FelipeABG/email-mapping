@@ -44,7 +44,7 @@ def main() -> None:
     print("\nGRAPH IS EULERIAN") if eul else print(f"\nGRAPH ISNT EULERIAN: \n{error}")
 
     # Exercise 4
-    print(f"\nDijkstra: {graph.nodes_in_distance(top_indegree[19][0], 0)}")
+    print(f"\nEXERCISE 4\n: {graph.nodes_in_distance(top_indegree[19][0], 3)}")
 
 
 if __name__ == "__main__":
