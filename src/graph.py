@@ -172,14 +172,12 @@ class Graph:
 
         return (False, error_msg)
 
-    def dijkstra(self, start: str) -> tuple[dict[str, float], dict[str, str]]:
+    def dijkstra(self, start: str) -> dict[str, tuple[float, str]]:
         if not self.contains_node(start):
             raise Exception("Node does not exist in graph")
 
-        distances = {node: float("inf") for node in self.adj_list}
-        distances[start] = 0
-
-        previous = {node: "-" for node in self.adj_list}
+        paths = {node: (float("inf"), "-") for node in self.adj_list}
+        paths[start] = (0, "-")
 
         queue = [(0, start)]
 
@@ -188,19 +186,18 @@ class Graph:
 
             for neighbor, weight in self.adj_list[current_node]:
                 new_dist = current_dist + weight
-                if new_dist < distances[neighbor]:
-                    distances[neighbor] = new_dist
-                    previous[neighbor] = current_node
+                if new_dist < paths[neighbor][0]:
+                    paths[neighbor] = (new_dist, current_node)
                     heapq.heappush(queue, (new_dist, neighbor))
 
-        return distances, previous
+        return paths
 
     def nodes_in_distance(self, start: str, distance: int) -> list[str]:
         result = []
-        distances, _ = self.dijkstra(start)
+        paths = self.dijkstra(start)
 
-        for node, dist in distances.items():
-            if node != start and dist <= distance:
+        for node, pair in paths.items():
+            if node != start and pair[0] <= distance:
                 result.append(node)
 
         return result
